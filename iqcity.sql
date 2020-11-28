@@ -43,15 +43,15 @@ create table tcity (id serial primary key , name varchar(200), image varchar(500
 
 create table trawdata (id serial primary key, name varchar(200)
     , weight_default float, param text, value text
-    , city_id bigint constraint fk_rawdata_city references tregion not null
-    , indicator_id bigint constraint fk_rawdata_indicator references tregion not null
+    , city_id bigint constraint fk_rawdata_city references tcity not null
+    , indicator_id bigint constraint fk_rawdata_indicator references tindicator not null
     , created timestamp default now(), creator_id bigint constraint fk_city_creator references auth_user
     , modified timestamp default now(), modifier_id bigint constraint fk_city_modifier references auth_user
     , deleted timestamp, deleter_id bigint constraint fk_city_deleter references auth_user);
 
 create table tindicatordata (id serial primary key, value float
     , city_id bigint constraint fk_inddata_city references tcity not null
-    , indicator_id bigint constraint fk_inddata_indicator references tregion not null
+    , indicator_id bigint constraint fk_inddata_indicator references tindicator not null
     , created timestamp default now(), creator_id bigint constraint fk_city_creator references auth_user
     , modified timestamp default now(), modifier_id bigint constraint fk_city_modifier references auth_user
     , deleted timestamp, deleter_id bigint constraint fk_city_deleter references auth_user);

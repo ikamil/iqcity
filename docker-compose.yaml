@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=scrapy
+      - POSTGRES_PASSWORD=scrapy
+      - POSTGRES_DB=scrapy
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "54321:54321"
+    volumes:
+      - ./data/pgdata:/var/lib/postgresql/data/pgdata
+      - ./data/postgresql.conf:/var/lib/postgresql/data/pgdata/postgresql.conf
+    restart: always
+  airflow:
+    image: scrapy-airflow-ecom:dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    environment:
+      - AIRFLOW__WEBSERVER__HIDE_PAUSED_DAGS_BY_DEFAULT=true
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://scrapy:scrapy@postgres:54321/scrapy
+      - AIRFLOW_CONN_POSTGRES_DEFAULT='postgresql://scrapy:scrapy@postgres:54321/scrapy
+      - EXECUTOR=Local
+      - GUNICORN_CMD_ARGS='--forwarded-allow-ips *'
+      - POSTGRES_DB=scrapy
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PASSWORD=scrapy
+      - POSTGRES_USER=scrapy
+      - POSTGRES_PORT=54321
+    volumes:
+      - ./dags:/usr/local/airflow/dags
+      - ./pipeline:/usr/local/airflow/pipeline
+      - ./data/out:/usr/local/airflow/out:Z
+    ports:
+      - "8080:8080"
+    command: webserver
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+  django:
+    image: django-airflow-ecom:dev
+    build:
+      context: .
+      dockerfile: DockerDjango
+    restart: always
+    depends_on:
+      - postgres
+    volumes:
+      - ./app:/app
+    ports:
+      - "8008:8008"
+
+

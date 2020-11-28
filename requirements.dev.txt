@@ -1,0 +1,16 @@
+boto3
+pandas
+psycopg2
+psycopg2-binary
+pipenv
+pytest-docker-compose
+smart-open
+apache-airflow
+scrapy
+xlrd
+openpyxl
+pyarrow
+dukpy
+envparse
+extruct
+

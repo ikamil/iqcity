@@ -1,0 +1,11 @@
+psycopg2-binary
+django
+admin-totals
+django-colorful
+Pillow
+django-admin-autocomplete-filter
+requests
+django-import-export
+python-docx
+pandas
+

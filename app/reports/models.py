@@ -19,5 +19,11 @@ class IQIndex(models.Model):
         verbose_name_plural = 'IQ Индексы'
         verbose_name = 'IQ Индекс'
 
+    def __str__(self):
+        return '%s: %s' % (self.city.name,  round(self.iq_index, 4))
+
     def save(self, force_insert=False, force_update=False, using=None,update_fields=None):
+        pass
+
+    def delete(self, using=None, keep_parents=False):
         pass

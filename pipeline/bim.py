@@ -32,7 +32,7 @@ class BIMOperator(BaseOperator):
         keys = list(filter(lambda key: key.endswith('.xlsx'), keys))
         result = []
         with Pool() as pool:
-            records = pool.map(partial(self.process_xlsx, s3_hook=s3_hook, bucket=self.bim_bucket), keys)
+            records = pool.map(partial(self.process_xlsx, s3_hook=s3_hook, bim_bucket=self.bim_bucket), keys)
         for recs in records:
             result.extend(recs)
 

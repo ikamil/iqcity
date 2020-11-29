@@ -18,14 +18,13 @@ class BIMOperator(BaseOperator):
         self.bim_path = bim_path
         self.s3_conn = s3_conn
 
-    def process_xlsx(self, s3_hook, bim_bucket, key):
+    def process_xlsx(self, key: str, s3_hook: S3Hook, bim_bucket: str):
         with pd.ExcelFile(io.BytesIO(s3_hook.get_key(key, bim_bucket).get()['Body'].read())) as excel_file:
             datas: dict = excel_file.parse(sheet_name=0)
         result = []
         for k, v in datas.items():
             result.extend(v.to_dict('records'))
         return result
-
 
     def execute(self, context):
         s3_hook: S3Hook = S3Hook(self.s3_conn)

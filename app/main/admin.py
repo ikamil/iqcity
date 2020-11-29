@@ -139,13 +139,13 @@ class IndicatorGroupAdmin(IndicatorBaseAdmin):
 
 
 @admin.register(IndicatorType)
-class IndicatorType(IndicatorBaseAdmin):
+class IndicatorTypeAdmin(IndicatorBaseAdmin):
     list_display = ['id', 'name', 'description', 'weight_default']
     fields = ['id', 'name', 'description', 'weight_default', 'modified']
 
 
 @admin.register(Indicator)
-class Indicator(IndicatorBaseAdmin):
+class IndicatorAdmin(IndicatorBaseAdmin):
     search_fields =  ['name', 'description', 'indicatorgroup__name']
     list_display = ['name', 'subindex', 'indicatorgroup', 'indicatortype', 'description', 'weight_default']
     fields = ['name', 'subindex', 'indicatorgroup', 'indicatortype', 'description', 'weight_default']
@@ -166,14 +166,14 @@ class IndicatorDataInline(BaseInline):
 
 
 @admin.register(City)
-class City(ImageBaseAdmin):
+class CityAdmin(ImageBaseAdmin):
     fields = ['name', 'description', 'region', 'population', 'area', 'vvp']
     list_display = ['name', 'region', 'population', 'area', 'vvp']
     inlines = [IndicatorDataInline]
 
 
 @admin.register(IQIndexHistory)
-class IQIndexHistory(BaseAdmin):
+class IQIndexHistoryAdmin(BaseAdmin):
     list_display = ['city', 'iq_index', 'created']
     fields = ['city', 'iq_index', 'created']
     readonly_fields = fields
@@ -181,12 +181,17 @@ class IQIndexHistory(BaseAdmin):
 
 
 @admin.register(RawData)
-class RawData(BaseAdmin):
+class RawDataAdmin(BaseAdmin):
     list_display = ['city', 'indicator', 'name', 'param', 'value', 'weight_default']
     fields = ['city', 'indicator', 'name', 'param', 'value', 'weight_default']
     list_filter = ['city', IndicatorFilter]
 
 
+@admin.register(ApiMethod)
+class ApiMethodAdmin(BaseAdmin):
+    list_display = ['name', 'url', 'headers', 'city', 'indicator']
+    fields = ['name', 'url', 'headers', 'city', 'indicator']
+    list_filter = ['city', IndicatorFilter]
 
 
 

@@ -22,9 +22,9 @@ def random_generator(size=8, chars=string.ascii_lowercase + string.digits):
 
 
 class Region(models.Model):
-    name = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(max_length=500, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, verbose_name='Наименование')
+    image = models.ImageField(max_length=500, blank=True, null=True, verbose_name='Изображение')
+    description = models.TextField(blank=True, null=True, verbose_name='Наименование')
     created = models.DateTimeField(blank=True, null=True)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, related_name='+', blank=True, null=True)
     modified = models.DateTimeField(blank=True, null=True)
@@ -35,15 +35,17 @@ class Region(models.Model):
     class Meta:
         managed = False
         db_table = 'tregion'
+        verbose_name = 'Регион'
+        verbose_name_plural = 'Регионы'
 
     def __str__(self):
         return self.name
 
 
 class City(models.Model):
-    name = models.CharField(max_length=200, blank=True, null=True)
-    region = models.ForeignKey(Region, models.DO_NOTHING)
-    image = models.ImageField(max_length=500, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, verbose_name='Наименование')
+    region = models.ForeignKey(Region, models.DO_NOTHING, verbose_name='Регион')
+    image = models.ImageField(max_length=500, blank=True, null=True, verbose_name='Изображение')
     description = models.TextField(blank=True, null=True)
     population = models.IntegerField(blank=True, null=True)
     area = models.FloatField(blank=True, null=True)
@@ -58,14 +60,16 @@ class City(models.Model):
     class Meta:
         managed = False
         db_table = 'tcity'
+        verbose_name = 'Город'
+        verbose_name_plural = 'Города'
 
     def __str__(self):
         return self.name
 
 
 class SubIndex(models.Model):
-    name = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(max_length=500, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, verbose_name='Наименование')
+    image = models.ImageField(max_length=500, blank=True, null=True,  verbose_name='Изображение')
     description = models.TextField(blank=True, null=True)
     weight_default = models.FloatField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True, default=now)
@@ -86,8 +90,8 @@ class SubIndex(models.Model):
 
 
 class IndicatorGroup(models.Model):
-    name = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(max_length=500, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, verbose_name='Наименование')
+    image = models.ImageField(max_length=500, blank=True, null=True, verbose_name='Изображение')
     description = models.TextField(blank=True, null=True)
     weight_default = models.FloatField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True, default=now)
@@ -100,6 +104,8 @@ class IndicatorGroup(models.Model):
     class Meta:
         managed = False
         db_table = 'tindicatorgroup'
+        verbose_name = 'Группа индикаторов'
+        verbose_name_plural = 'Группы индикаторов'
 
     def __str__(self):
         return self.name
@@ -107,8 +113,8 @@ class IndicatorGroup(models.Model):
 
 class IndicatorType(models.Model):
     id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=200, blank=True, null=True)
-    image = models.ImageField(max_length=500, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, verbose_name='Наименование')
+    image = models.ImageField(max_length=500, blank=True, null=True, verbose_name='Изображение')
     description = models.TextField(blank=True, null=True)
     weight_default = models.FloatField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True, default=now)
@@ -121,14 +127,16 @@ class IndicatorType(models.Model):
     class Meta:
         managed = False
         db_table = 'tindicatortype'
+        verbose_name = 'Тип индикатора'
+        verbose_name_plural = 'Типы индикаторов'
 
     def __str__(self):
         return self.name
 
 
 class Indicator(models.Model):
-    name = models.CharField(max_length=200)
-    image = models.ImageField(max_length=500, blank=True, null=True)
+    name = models.CharField(max_length=200, verbose_name='Наименование')
+    image = models.ImageField(max_length=500, blank=True, null=True, verbose_name='Изображение')
     description = models.TextField(blank=True, null=True)
     weight_default = models.FloatField(blank=True, null=True)
     subindex = models.ForeignKey(SubIndex, models.DO_NOTHING)
@@ -144,15 +152,17 @@ class Indicator(models.Model):
     class Meta:
         managed = False
         db_table = 'tindicator'
+        verbose_name = 'Индикатор'
+        verbose_name_plural = 'Индикаторы'
 
     def __str__(self):
         return self.name
 
 
 class IndicatorData(models.Model):
-    value = models.FloatField(blank=True, null=True)
-    city = models.ForeignKey(City, models.DO_NOTHING)
-    indicator = models.ForeignKey(Indicator, models.DO_NOTHING)
+    value = models.FloatField(blank=True, null=True, verbose_name='Значение')
+    city = models.ForeignKey(City, models.DO_NOTHING, verbose_name='Город')
+    indicator = models.ForeignKey(Indicator, models.DO_NOTHING, verbose_name='Индикатор')
     created = models.DateTimeField(blank=True, null=True, default=now)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, related_name='+', blank=True, null=True)
     modified = models.DateTimeField(blank=True, null=True, default=now)
@@ -163,6 +173,8 @@ class IndicatorData(models.Model):
     class Meta:
         managed = False
         db_table = 'tindicatordata'
+        verbose_name = 'Значение индикатора'
+        verbose_name_plural = 'Значения индикаторов'
 
     def __str__(self):
         return self.indicator.name
@@ -185,8 +197,8 @@ class IQIndexHistory(models.Model):
 
 
 class RawData(models.Model):
-    name = models.CharField(max_length=200, blank=True, null=True)
-    weight_default = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True, verbose_name='Наименование')
+    weight_default = models.FloatField(blank=True, null=True, verbose_name='Вес показателя')
     param = models.TextField(blank=True, null=True)
     value = models.TextField(blank=True, null=True)
     city = models.ForeignKey(City, models.DO_NOTHING)
@@ -201,8 +213,31 @@ class RawData(models.Model):
     class Meta:
         managed = False
         db_table = 'trawdata'
+        verbose_name = 'Блок загруженных данных'
+        verbose_name_plural = 'Загруженные данные'
 
     def __str__(self):
         return self.name
 
 
+class ApiMethod(models.Model):
+    name = models.CharField(max_length=200, verbose_name='Наименование')
+    url = models.CharField(max_length=2000, verbose_name='URL для вызова')
+    headers = models.TextField(max_length=2000, blank=True, null=True, verbose_name='HTTP заголовки')
+    city = models.ForeignKey(City, models.DO_NOTHING, blank=True, null=True, verbose_name='Город')
+    indicator = models.ForeignKey(Indicator, models.DO_NOTHING, blank=True, null=True, verbose_name='Индикатор')
+    created = models.DateTimeField(blank=True, null=True, default=now)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, related_name='+', blank=True, null=True)
+    modified = models.DateTimeField(blank=True, null=True, default=now)
+    modifier = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, related_name='+', blank=True, null=True)
+    deleted = models.DateTimeField(blank=True, null=True)
+    deleter = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, related_name='+', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'tapimethod'
+        verbose_name = 'API для импорта данных'
+        verbose_name_plural = 'API для импорта данных'
+
+    def __str__(self):
+        return self.indicator.name

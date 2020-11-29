@@ -1,6 +1,6 @@
 from airflow.operators.bash_operator import BaseOperator
 from psycopg2.extras import Json
-import random, json
+import random, json, requests
 from airflow.hooks.postgres_hook import PostgresHook
 
 
@@ -34,9 +34,18 @@ class DoubleGisOperator(BaseOperator):
     }
 }""" % {"id": random.randint(1, 20000)}
         try:
+            c.callproc("fget_2gis", [])
+            apis = c.fetchone()[0]
+            apis = json.loads(apis)
+            items = []
+            for api in apis:
+                res = requests.get(api.get('url'))
+                print("Fake (due to missing API KEY) 2Gis API call to %s" % api.get('url'))
+                res = respond_2gis_example
+                items.extend(json.loads(res).get('result', {'items': []}).get('items', []))
+
             c.execute("BEGIN")
-            pdata = json.loads(respond_2gis_example).get('result', {'items': []}).get('items', [])
-            params = Json(pdata)
+            params = Json(items)
             c.callproc("fset_2gis", [params])
             results = c.fetchone()[0]
             c.execute("COMMIT")

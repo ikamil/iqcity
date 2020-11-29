@@ -75,7 +75,8 @@ select
     ,sum(case when i.indicatortype_id=3 then coalesce(i.weight_default,1)*d.val end) utility
     ,sum(coalesce(i.weight_default,1)*d.val) iq_index
     from tcity c, (select city_id, indicator_id, value as val from tindicatordata where deleted is null
-        union all select city_id, indicator_id, sum(sign(length(ltrim(trim(value),'0')))) from trawdata where deleted is null
+        union all select city_id, indicator_id, sum(sign(length(ltrim(trim(value),'0'))))/nullif(count(distinct param),0)
+        from trawdata where deleted is null
         group by city_id, indicator_id) d
        , tindicator i where d.city_id=c.id and d.indicator_id=i.id and i.deleted is null
     group by region_id, city_id, population, area,vvp;
@@ -96,6 +97,28 @@ begin
     return '{"status": "ok"}';
 end
 $$;
+
+drop table if exists tapimethod;
+
+create table tapimethod (id serial primary key, name varchar(200)
+    , url text, headers text, oauth text
+    , city_id bigint constraint fk_apimethod_city references tcity
+    , indicator_id bigint constraint fk_apimethod_indicator references tindicator
+    , created timestamp default now(), creator_id bigint constraint fk_apimethod_creator references auth_user
+    , modified timestamp default now(), modifier_id bigint constraint fk_apimethod_modifier references auth_user
+    , deleted timestamp, deleter_id bigint constraint fk_apimethod_deleter references auth_user);
+
+insert into tapimethod (name, url)
+values ('Велопрокат', 'https://catalog.api.2gis.com/3.0/items?q=Челны велопрокат&type=branch&key=YOUR_KEY');
+
+drop function if exists fget_2gis(pitem json) ;
+
+create or replace function fget_2gis() returns json language sql as $$
+    select json_agg(json_build_object('url', url, 'headers', headers)) from tapimethod where deleted is null;
+$$;
+
+select * from fget_2gis();
+
 
 drop function if exists fset_bim(phouses json) ;
 

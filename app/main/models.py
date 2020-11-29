@@ -189,7 +189,7 @@ class RawData(models.Model):
     weight_default = models.FloatField(blank=True, null=True)
     param = models.TextField(blank=True, null=True)
     value = models.TextField(blank=True, null=True)
-    city = models.ForeignKey(Region, models.DO_NOTHING)
+    city = models.ForeignKey(City, models.DO_NOTHING)
     indicator = models.ForeignKey(Indicator, models.DO_NOTHING)
     created = models.DateTimeField(blank=True, null=True, default=now)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, models.DO_NOTHING, related_name='+', blank=True, null=True)

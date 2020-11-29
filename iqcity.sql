@@ -75,7 +75,7 @@ select
     ,sum(case when i.indicatortype_id=3 then coalesce(i.weight_default,1)*d.val end) utility
     ,sum(coalesce(i.weight_default,1)*d.val) iq_index
     from tcity c, (select city_id, indicator_id, value as val from tindicatordata where deleted is null
-        union all select city_id, indicator_id, sum(sign(length(value))) from trawdata where deleted is null
+        union all select city_id, indicator_id, sum(sign(length(ltrim(trim(value),'0')))) from trawdata where deleted is null
         group by city_id, indicator_id) d
        , tindicator i where d.city_id=c.id and d.indicator_id=i.id and i.deleted is null
     group by region_id, city_id, population, area,vvp;
@@ -104,7 +104,7 @@ create or replace function fset_bim(pdata json) returns json language plpgsql as
 declare vCityID bigint := 3;
 begin
     insert into trawdata (name, param, value, city_id, indicator_id)
-    select 'BIM дом',address ,bim ,1
+    select 'BIM дом',address ,bim, vCityID
          , (select id from tindicator where name='Количество домов с BIM')
     from json_to_recordset(pdata) as x (address text, bim text);
     insert into tiqindex_history(iq_index, city_id)

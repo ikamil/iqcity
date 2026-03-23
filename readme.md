@@ -1,6 +1,7 @@
 # iqcity
-Система мониторинга и анализа данных проекта «УМНЫЙ ГОРОД» для автоматизированного сбора данных индекса IQ позволяет собирать и анализировать данные для расчета IQ территориальной единицы как в автоматическом режиме так и в режиме оператора и загрузки данных
+---
+A monitoring and data analysis system for the "SMART CITY" project, designed for automated collection of IQ index data. It enables collecting and analyzing data to calculate the IQ score of a territorial unit both in automatic mode and in operator mode with manual data upload.
 
-Для возможности запустить postgresql на нестандартном порту (54321 в примере) нужно сначала закомментировать эту строку в docker-compose, запустить 1 раз для инициализации директории, затем остановить docker-compose down, раскомментировать строку с конфиг-файлом PostgreSQL, и запустить docker-compose up -d
+To run PostgreSQL on a non-standard port (54321 in the example), first comment out the relevant line in docker-compose, run it once to initialize the directory, then stop it with `docker-compose down`, uncomment the PostgreSQL config file line, and start it again with `docker-compose up -d`.
 
-После установки, необходимо создать подключения к s3_default (AWS секрет и ключ) и pg_default (логины и пароли на постгрес) на контейнере с портом 8080, в меню Admin -> Connections
+After installation, you need to create connections for `s3_default` (AWS secret and key) and `pg_default` (PostgreSQL login and password) on the container running on port 8080, via the Admin -> Connections menu.
